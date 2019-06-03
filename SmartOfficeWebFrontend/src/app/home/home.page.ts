@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { DataService } from '../services/data.service';
+
 
 @Component({
   selector: 'app-home',
@@ -7,6 +10,13 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() {}
+  constructor(
+    private router: Router, private dataService: DataService
+  ) {}
 
+  goToCreatPage(raum) {
+    alert(raum);
+    this.dataService.setData(1, raum);
+    this.router.navigateByUrl('/create-meeting/1');
+  }
 }

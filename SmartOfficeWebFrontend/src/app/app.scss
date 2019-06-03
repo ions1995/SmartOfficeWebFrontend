@@ -1,6 +1,21 @@
-// App Styles
-// ----------------------------------------------------------------------------
-// Put style rules here that you want to apply to the entire application. These 
-// styles are for the entire app and not just one component. Additionally, this 
-// file can hold Sass mixins, functions, and placeholder classes to be imported 
-// and used throughout the application.
+#userInformation{
+    background-color: inherit;
+    border: 3px;
+    border-color: black
+}
+
+#userImage{
+    background-color: lightblue;
+    border-radius: 10px 10px 0px 0px;
+}
+
+#userName{
+    background-color: lightblue;
+    border-radius: 0px 0px 10px 10px;
+    font-weight: bold;
+    text-align: center;
+    -webkit-text-fill-color: red;
+    
+}
+
+

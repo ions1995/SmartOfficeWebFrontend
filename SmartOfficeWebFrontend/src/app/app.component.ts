@@ -11,15 +11,25 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 export class AppComponent {
   public appPages = [
     {
-      title: 'Home',
+      title: 'Raumübersicht',
       url: '/home',
-      icon: 'home'
+      icon: 'grid'
     },
     {
-      title: 'List',
+      title: 'Belegungsplan',
       url: '/list',
       icon: 'list'
-    }
+    },
+    {
+      title: 'Meetings erstellen',
+      url: '/create-meeting',
+      icon: 'add'
+    },
+    {
+      title: 'Details zu Meetings',
+      url: '/meeting-details',
+      icon: 'information-circle'
+    },
   ];
 
   constructor(

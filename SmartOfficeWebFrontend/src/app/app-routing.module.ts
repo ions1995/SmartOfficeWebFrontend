@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { DataResolverService } from './resolver/data-resolver.service';
 
 const routes: Routes = [
   {
@@ -15,7 +16,15 @@ const routes: Routes = [
     path: 'list',
     loadChildren: './list/list.module#ListPageModule'
   },
-  { path: 'create-meeting', loadChildren: './create-meeting/create-meeting.module#CreateMeetingPageModule' }
+  { path: 'create-meeting', loadChildren: './create-meeting/create-meeting.module#CreateMeetingPageModule' },
+  {
+    path: 'create-meeting/:id',
+    resolve: {
+      special: DataResolverService
+    },
+    loadChildren: './create-meeting/create-meeting.module#CreateMeetingPageModule'
+  },
+  { path: 'meeting-details', loadChildren: './meeting-details/meeting-details.module#MeetingDetailsPageModule' }
 ];
 
 @NgModule({

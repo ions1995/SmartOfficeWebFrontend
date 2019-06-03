@@ -1,4 +1,17 @@
-.welcome-card ion-img {
-  max-height: 35vh;
-  overflow: hidden;
+ #image-container {
+  position: relative;
+  margin: 3em auto;
+  margin-top: 3em;
+  margin-right: auto;
+  margin-bottom: 3em;
+  margin-left: auto;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events:none;
+  background:none !important;
 }
