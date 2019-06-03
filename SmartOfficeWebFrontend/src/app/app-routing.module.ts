@@ -3,11 +3,9 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { DataResolverService } from './resolver/data-resolver.service';
 
 const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
-  },
+  //{ path: '', redirectTo: 'home', pathMatch: 'full' }
+  { path: '', loadChildren: './login/login.module#LoginPageModule' },
+  { path: 'register', loadChildren: './register/register.module#RegisterPageModule' },
   {
     path: 'home',
     loadChildren: './home/home.module#HomePageModule'
@@ -24,7 +22,9 @@ const routes: Routes = [
     },
     loadChildren: './create-meeting/create-meeting.module#CreateMeetingPageModule'
   },
-  { path: 'meeting-details', loadChildren: './meeting-details/meeting-details.module#MeetingDetailsPageModule' }
+  { path: 'meeting-details', loadChildren: './meeting-details/meeting-details.module#MeetingDetailsPageModule' },
+  { path: 'login', loadChildren: './login/login.module#LoginPageModule' },
+  { path: 'register', loadChildren: './register/register.module#RegisterPageModule' }
 ];
 
 @NgModule({
