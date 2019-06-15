@@ -11,15 +11,19 @@
 
 <ion-content>
   <ion-item>
-    <ion-label position="floating">Raum</ion-label>
-    <ion-input>{{data}}</ion-input>
+    <ion-label>Raum:</ion-label>
+    <ion-select [(ngModel)]="raumAuswahl" multiple="false" interface="alert" cancelText="Abbrechen" okText="OK">
+      <ion-select-option value="r1">Büro 1</ion-select-option>
+      <ion-select-option value="r2">Büro 2</ion-select-option>
+      <ion-select-option value="r3">Büro 3</ion-select-option>
+    </ion-select>
   </ion-item>
   <ion-item>
     <ion-label>Einladen:</ion-label>
   </ion-item>
   <ion-item>
     <ion-label>Verpflichtend:</ion-label>
-    <ion-select [(ngModel)]="verpflichtendeEinladungen" multiple="true" interface="alert" cancelText="Nah" okText="Okay!">
+    <ion-select [(ngModel)]="verpflichtendeEinladungen" multiple="true" interface="alert" cancelText="Abbrechen" okText="OK">
       <ion-select-option value="bacon">Bacon</ion-select-option>
       <ion-select-option value="olives">Black Olives</ion-select-option>
       <ion-select-option value="xcheese">Extra Cheese</ion-select-option>
@@ -34,7 +38,7 @@
   </ion-item>
   <ion-item>
     <ion-label>Optional:</ion-label>
-    <ion-select [(ngModel)]="optionaleEinladungen" multiple="true" interface="alert" cancelText="Nah" okText="Okay!">
+    <ion-select [(ngModel)]="optionaleEinladungen" multiple="true" interface="alert" cancelText="Abbrechen" okText="OK">
       <ion-select-option value="bacon">Bacon</ion-select-option>
       <ion-select-option value="olives">Black Olives</ion-select-option>
       <ion-select-option value="xcheese">Extra Cheese</ion-select-option>
@@ -47,23 +51,35 @@
       <ion-select-option value="Spinach">Spinach</ion-select-option>
     </ion-select>
   </ion-item>
+  <ion-item >
+    <ion-label>Von:</ion-label>
+  </ion-item>
   <ion-item>
     <ion-label position="floating">Datum</ion-label>
-    <ion-datetime display-format="MMM DD, YYYY"></ion-datetime>
+    <ion-datetime display-format="MMM DD, YYYY" [(ngModel)]="dateFrom"></ion-datetime>
   </ion-item>
   <ion-item>
     <ion-label position="floating">Uhrzeit</ion-label>
-    <ion-datetime display-format="HH:mm"></ion-datetime>
+    <ion-datetime display-format="HH:mm" [(ngModel)]="timeFrom"></ion-datetime>
+  </ion-item>
+  <ion-item >
+    <ion-label>Bis:</ion-label>
   </ion-item>
   <ion-item>
-    <ion-content>Gastgeber: "NAME DES GASTGEBERS/USERS"</ion-content>
+    <ion-label position="floating">Datum</ion-label>
+    <ion-datetime display-format="MMM DD, YYYY" [(ngModel)]="dateTo"></ion-datetime>
+  </ion-item>
+  <ion-item>
+    <ion-label position="floating">Uhrzeit</ion-label>
+    <ion-datetime display-format="HH:mm" [(ngModel)]="timeTo"></ion-datetime>
+  </ion-item>
+  <ion-item>
+    <ion-content>Gastgeber: </ion-content>
+    <ion-content>{{username}}</ion-content>
   </ion-item>
   <ion-item *ngIf="data != 'Büro 1'">
     <ion-label>Bewirtung:</ion-label>
-  </ion-item>
-  <ion-item *ngIf="data != 'Büro 1'">
-    <ion-label>Bewirtung:</ion-label>
-    <ion-select [(ngModel)]="bewirtungsauswahl" multiple="true" interface="alert" cancelText="Nah" okText="Okay!">
+    <ion-select [(ngModel)]="bewirtungsauswahl" multiple="true" interface="alert" cancelText="Abbrechen" okText="OK">
       <ion-select-option value="kaffee">Kaffee</ion-select-option>
       <ion-select-option value="nervennahrung">Nervennahrung</ion-select-option>
       <ion-select-option value="getraenke">Getränke</ion-select-option>
@@ -71,10 +87,10 @@
     </ion-select>
   </ion-item>
   <ion-item>
-    <ion-button>Prüfen der Buchung</ion-button>
+    <ion-button (click)="checkMeeting()">Prüfen der Buchung</ion-button>
   </ion-item>
   <ion-item>
-    <ion-button>jetzt buchen</ion-button>
+    <ion-button (click)="saveMeeting()">jetzt buchen</ion-button>
   </ion-item>
 
 </ion-content>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AuthenticateService } from '../services/authentication.service';
 import { NavController } from '@ionic/angular';
- 
+
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
@@ -16,23 +16,34 @@ export class RegisterPage implements OnInit {
   successMessage: string = '';
 
   validation_messages = {
-   'email': [
-     { type: 'required', message: 'Email is required.' },
-     { type: 'pattern', message: 'Enter a valid email.' }
-   ],
-   'password': [
-     { type: 'required', message: 'Password is required.' },
-     { type: 'minlength', message: 'Password must be at least 5 characters long.' }
-   ]
- };
+    'email': [
+      { type: 'required', message: 'Email is required.' },
+      { type: 'pattern', message: 'Enter a valid email.' }
+    ],
+    'password': [
+      { type: 'required', message: 'Password is required.' },
+      { type: 'minlength', message: 'Password must be at least 5 characters long.' }
+    ],
+    /*'username': [
+      { type: 'required', message: 'Username is required.' },
+      { type: 'minlength', message: 'Username must be at least 5 characters long.' }
+    ],
+    'firstname': [
+      { type: 'required', message: 'Firstname is required.' },
+    ],
+    'lastname': [
+      { type: 'required', message: 'Lastname is required.' },
+    ]*/
+
+  };
 
   constructor(
     private navCtrl: NavController,
     private authService: AuthenticateService,
     private formBuilder: FormBuilder
-  ) {}
+  ) { }
 
-  ngOnInit(){
+  ngOnInit() {
     this.validations_form = this.formBuilder.group({
       email: new FormControl('', Validators.compose([
         Validators.required,
@@ -42,23 +53,33 @@ export class RegisterPage implements OnInit {
         Validators.minLength(5),
         Validators.required
       ])),
+      /*username: new FormControl('', Validators.compose([
+        Validators.minLength(5),
+        Validators.required
+      ])),
+      firstname: new FormControl('', Validators.compose([
+        Validators.required
+      ])),
+      lastname: new FormControl('', Validators.compose([
+        Validators.required
+      ])),*/
     });
   }
 
-  tryRegister(value){
+  tryRegister(value) {
     this.authService.registerUser(value)
-     .then(res => {
-       console.log(res);
-       this.errorMessage = "";
-       this.successMessage = "Your account has been created. Please log in.";
-     }, err => {
-       console.log(err);
-       this.errorMessage = err.message;
-       this.successMessage = "";
-     })
+      .then(res => {
+        console.log(res);
+        this.errorMessage = '';
+        this.successMessage = 'Your account has been created. Please log in.';
+      }, err => {
+        console.log(err);
+        this.errorMessage = err.message;
+        this.successMessage = '';
+      });
   }
 
-  goLoginPage(){
+  goLoginPage() {
     this.navCtrl.navigateBack('');
   }
 

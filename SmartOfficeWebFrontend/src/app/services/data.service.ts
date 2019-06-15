@@ -11,9 +11,11 @@ export class DataService {
 
   setData(id, data) {
     this.data[id] = data;
+    console.log(this.data[id]);
   }
 
   getData(id) {
+    console.log(this.data[id]);
     return this.data[id];
   }
 }

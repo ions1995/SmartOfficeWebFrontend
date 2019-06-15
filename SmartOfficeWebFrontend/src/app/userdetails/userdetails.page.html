@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>userdetails</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-item>
+        <ion-label  position="floating" color="primary">Nickname</ion-label>
+        <ion-input type="text" [(ngModel)]="username"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label  position="floating" color="primary">Firma</ion-label>
+        <ion-input type="text" [(ngModel)]="firm"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label  position="floating" color="primary">Vorname</ion-label>
+        <ion-input type="text" [(ngModel)]="firstname"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label  position="floating" color="primary">Nachname</ion-label>
+        <ion-input type="text" [(ngModel)]="lastname"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label  position="floating" color="primary">Abteilung</ion-label>
+        <ion-input type="text" [(ngModel)]="department"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label  position="floating" color="primary">RFID-Chip Useridentifikationscode</ion-label>
+        <ion-input type="text" [(ngModel)]="uidRFID"></ion-input>
+      </ion-item>
+      <ion-button (click)="updateUser()" full>Speichern</ion-button>
+</ion-content>
