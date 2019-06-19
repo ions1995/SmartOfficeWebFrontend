@@ -5,6 +5,7 @@ import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/fires
 import { Observable } from 'rxjs';
 
 import { DataService } from '../services/data.service';
+import { delay } from 'q';
 
 @Component({
   selector: 'app-create-meeting',
@@ -17,17 +18,16 @@ export class CreateMeetingPage implements OnInit {
   verpflichtendeEinladungen;
   optionaleEinladungen;
   dateFrom;
-  timeFrom;
   dateTo;
-  timeTo;
   bewirtungsauswahl;
   username;
+  user;
 
   flag: boolean = false;
 
-  userCollectionRef: AngularFirestoreCollection;
+  userCollectionRef: AngularFirestoreCollection<any>;
   userRef: Observable<any>;
-  meetingCollectionRef: AngularFirestoreCollection;
+  meetingCollectionRef: AngularFirestoreCollection<any>;
   meetingRef: Observable<any>;
 
   constructor(private route: ActivatedRoute, private router: Router, private db: AngularFirestore, private dataService: DataService) {
@@ -48,51 +48,84 @@ export class CreateMeetingPage implements OnInit {
     console.log(this.dataService.getData(1));
 
     //Gastgeber setzen
-    var user = firebase.auth().currentUser;
-    this.userCollectionRef.doc(user.uid).valueChanges().forEach((user1) => {
-      this.username = user1.username;
+    this.user = firebase.auth().currentUser;
+    this.userCollectionRef.doc(this.user.uid).valueChanges().forEach((user1) => {
+      this.username = user1['username'];
     });
   }
 
-  checkMeeting(): boolean {
+/**
+ * prüfen
+ * */
+  async checkMeeting() {
     this.flag = false;
+    let dateFrom = new Date(this.dateFrom);
+    let dateTo = new Date(this.dateTo);
 
-     //prüfen
-    this.db.collection('meetings').valueChanges().forEach((doc1) => {
-      doc1.forEach((field1) => {
-        console.log(field1.room);
-        console.log(field1.dateAndTimeEnd.toDate());
-        //existieren Meetings mit dem gleichen Raum?
-        if (field1.room === this.raumAuswahl) {
-          console.log(field1.room);
-          //https://firebase.google.com/docs/reference/android/com/google/firebase/Timestamp
-          //existieren Meetings mit dem gleichen Datum?
+    console.log('1: ' + this.flag);
 
+    var query = this.db.collection('/meetings/', ref => ref
+    .where('room', '==', this.raumAuswahl)).valueChanges();
+    console.log(query);
 
-          //esistieren Meetings deren Zeitraum den ausgewählten "berühren"
-          //hierfür muss die Zeit (angegeben) in Nanosekunden umgerechnet werden und daraufhin verglichen werden 
-
-
-          //mehr wird nicht geprüft!!!
-
-
+    query.forEach(document => {
+      console.log('1,2: ' + document);
+      if (document.length === 0) {
+        this.flag = true;
+        console.log('1,5: ' + this.flag);
+        return;
+      } else {
+        for (var i = 0; i < document.length; i++){
+          console.log('1.6: ' + document[i]['room']);
+          console.log('1.6.1: ' + document[i]['dateAndTimeStart']);
+          console.log('1.6.2: ' + document[i]['dateAndTimeEnd']);
+          let dateFireFrom = new Date(document[i]['dateAndTimeStart'].toDate());
+          let dateFireTo = new Date(document[i]['dateAndTimeEnd'].toDate());
+          console.log('dateFireFrom: ' + dateFireFrom);
+          console.log('dateFireTo: ' + dateFireTo);
+          console.log('dateFrom: ' + dateFrom);
+          console.log('dateTo: ' + dateTo);
+          console.log('dateFrom < dateFireFrom');
+          console.log(dateFrom < dateFireFrom);
+          console.log('dateTo <= dateFireFrom');
+          console.log(dateTo <= dateFireFrom);
+          console.log('dateFrom >= dateFireTo');
+          console.log(dateFrom >= dateFireTo);
+          console.log('dateTo > dateFireTo');
+          console.log(dateTo > dateFireTo);
+          if ((dateFrom < dateFireFrom && dateTo <= dateFireFrom) || (dateFrom >= dateFireTo && dateTo > dateFireTo)) {
+            this.flag = true;
+            console.log('1,7: ' + this.flag);
+          } else {
+            console.log('1.8: ' + this.flag);
+          }
         }
-      });
+      }
     });
-
-
-
-    //flag = true setzen
-
-
-    return this.flag;
-
+    console.log('2: ' + this.flag);
   }
 
-  saveMeeting() {
-
-    if (this.checkMeeting()) {
-
+  async saveMeeting() {
+    console.log('3: ' + this.flag);
+    this.checkMeeting();
+    await delay(5000);
+    console.log('4: ' + this.flag);
+    if (this.flag) {
+      console.log('5: ' + this.flag);
+      this.meetingCollectionRef.add({
+        bewirtung: this.bewirtungsauswahl,
+        dateAndTimeEnd: this.dateFrom,
+        dateAndTimeStart: this.dateTo,
+        hostID: this.user.uid,
+        hostName: this.username,
+        optional: this.optionaleEinladungen,
+        verpflichtend: this.verpflichtendeEinladungen
+      }).then(function(docRef) {
+        console.log("Document written with ID: ", docRef.id);
+    })
+    .catch(function(error) {
+        console.error("Error adding document: ", error);
+    });
     }
   }
 

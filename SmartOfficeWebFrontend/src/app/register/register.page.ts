@@ -24,17 +24,6 @@ export class RegisterPage implements OnInit {
       { type: 'required', message: 'Password is required.' },
       { type: 'minlength', message: 'Password must be at least 5 characters long.' }
     ],
-    /*'username': [
-      { type: 'required', message: 'Username is required.' },
-      { type: 'minlength', message: 'Username must be at least 5 characters long.' }
-    ],
-    'firstname': [
-      { type: 'required', message: 'Firstname is required.' },
-    ],
-    'lastname': [
-      { type: 'required', message: 'Lastname is required.' },
-    ]*/
-
   };
 
   constructor(
@@ -52,17 +41,7 @@ export class RegisterPage implements OnInit {
       password: new FormControl('', Validators.compose([
         Validators.minLength(5),
         Validators.required
-      ])),
-      /*username: new FormControl('', Validators.compose([
-        Validators.minLength(5),
-        Validators.required
-      ])),
-      firstname: new FormControl('', Validators.compose([
-        Validators.required
-      ])),
-      lastname: new FormControl('', Validators.compose([
-        Validators.required
-      ])),*/
+      ]))
     });
   }
 

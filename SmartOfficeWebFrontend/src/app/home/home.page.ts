@@ -15,8 +15,13 @@ export class HomePage {
   ) {}
 
   goToCreatPage(raum) {
-    alert(raum);
+    //alert(raum);
     this.dataService.setData(1, raum);
     this.router.navigateByUrl('/create-meeting/1');
+  }
+
+  //Läd den momentanen Stand neu --> Liste oder Map aktualisieren sich 
+  reload() {
+
   }
 }

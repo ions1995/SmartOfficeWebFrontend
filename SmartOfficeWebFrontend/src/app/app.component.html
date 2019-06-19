@@ -1,37 +1,35 @@
 <ion-app>
-  <ion-split-pane>
-    <ion-menu>
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>Smart Office - Roomplaner</ion-title>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content>
-        <div id="userInformation">
-          <ion-card-header id="userImage">
-            <ion-button expand="full" href="/userdetails">
-                <ion-icon size="large" slot="start" name="person"></ion-icon>
-            </ion-button>
-          </ion-card-header>
-          <ion-card-content id="userName">
-              <ion-label>
-                Firstname Lastname
-              </ion-label>
-          </ion-card-content>
-        </div>
-        <ion-list>
-          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
-            <ion-item [routerDirection]="'root'" [routerLink]="[p.url]">
-              <ion-icon slot="start" [name]="p.icon"></ion-icon>
-              <ion-label>
-                {{p.title}}
-              </ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-        </ion-list>
-        <ion-button (click)="logout()">Logout</ion-button>
-      </ion-content>
-    </ion-menu>
-    <ion-router-outlet main></ion-router-outlet>
-  </ion-split-pane>
+  <ion-menu>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Smart Office - Roomplaner</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <div id="userInformation">
+        <ion-card-header id="userImage">
+          <ion-button expand="full" href="/userdetails">
+              <ion-icon size="large" slot="start" name="person"></ion-icon>
+          </ion-button>
+        </ion-card-header>
+        <ion-card-content id="userName">
+            <ion-label>
+              Firstname Lastname
+            </ion-label>
+        </ion-card-content>
+      </div>
+      <ion-list>
+        <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
+          <ion-item [routerDirection]="'root'" [routerLink]="[p.url]">
+            <ion-icon slot="start" [name]="p.icon"></ion-icon>
+            <ion-label>
+              {{p.title}}
+            </ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+      </ion-list>
+      <ion-button (click)="logout()">Logout</ion-button>
+    </ion-content>
+  </ion-menu>
+  <ion-router-outlet main></ion-router-outlet>
 </ion-app>

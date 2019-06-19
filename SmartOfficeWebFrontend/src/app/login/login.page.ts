@@ -56,7 +56,7 @@ export class LoginPage implements OnInit {
       this.navCtrl.navigateForward('/home');
     }, err => {
       this.errorMessage = err.message;
-    })
+    });
   }
 
   goToRegisterPage(){
