@@ -12,6 +12,11 @@ import { AuthenticateService } from './services/authentication.service';
 export class AppComponent {
   public appPages = [
     {
+      title: 'Userdetails',
+      url: '/userdetails',
+      icon: 'person'
+    },
+    {
       title: 'Raumübersicht',
       url: '/home',
       icon: 'grid'
@@ -30,7 +35,7 @@ export class AppComponent {
       title: 'Details zu Meetings',
       url: '/meeting-details',
       icon: 'information-circle'
-    },
+    }
   ];
 
   constructor(

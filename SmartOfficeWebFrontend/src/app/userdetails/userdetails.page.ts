@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as firebase from 'firebase/app';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
+import { DataService } from '../services/data.service';
 
 
 @Component({
@@ -15,19 +16,29 @@ export class UserdetailsPage implements OnInit {
   firstname: string = '';
   lastname: string = '';
   department: string = '';
-  uidRFID: string = '';//mit ionic NFC auslesen???
-  userCollectionRef: AngularFirestoreCollection;
+  uidRFID: string = '';//mit ionic NFC auslesen???--> eher weniger
+  userCollectionRef: AngularFirestoreCollection<any>;
   userRef: Observable<any>;
-  constructor(public db: AngularFirestore) {
+  constructor(public db: AngularFirestore, private dataService: DataService) {
     this.userCollectionRef = this.db.collection('user');
     this.userRef = this.userCollectionRef.valueChanges();
+    //User-Daten auslesen und in die entsprechenden Felder eintragen
    }
 
   ngOnInit() {
+    var user = this.dataService.getData(2);
+    this.userCollectionRef.doc(user.uid).valueChanges().forEach((user1) => {
+      this.username = user1['username'];
+      this.firm = user1['firm'];
+      this.firstname = user1['firstname'];
+      this.lastname = user1['lastname'];
+      this.department = user1['department'];
+      this.uidRFID = user1['uidRFID'];
+    });
   }
 
   updateUser() {
-    var user = firebase.auth().currentUser;
+    var user = this.dataService.getData(2);
     console.log(this.department);
     console.log(this.firm);
     console.log(this.firstname);

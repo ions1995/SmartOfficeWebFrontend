@@ -6,20 +6,8 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <div id="userInformation">
-        <ion-card-header id="userImage">
-          <ion-button expand="full" href="/userdetails">
-              <ion-icon size="large" slot="start" name="person"></ion-icon>
-          </ion-button>
-        </ion-card-header>
-        <ion-card-content id="userName">
-            <ion-label>
-              Firstname Lastname
-            </ion-label>
-        </ion-card-content>
-      </div>
       <ion-list>
-        <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
+        <ion-menu-toggle auto-hide="true" *ngFor="let p of appPages">
           <ion-item [routerDirection]="'root'" [routerLink]="[p.url]">
             <ion-icon slot="start" [name]="p.icon"></ion-icon>
             <ion-label>

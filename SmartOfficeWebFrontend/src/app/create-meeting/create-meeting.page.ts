@@ -15,11 +15,11 @@ import { delay } from 'q';
 export class CreateMeetingPage implements OnInit {
   data: any;
   raumAuswahl;
-  verpflichtendeEinladungen;
-  optionaleEinladungen;
+  verpflichtendeEinladungen = [];
+  optionaleEinladungen = [];
   dateFrom;
   dateTo;
-  bewirtungsauswahl;
+  bewirtungsauswahl = [];
   username;
   user;
 
@@ -30,12 +30,12 @@ export class CreateMeetingPage implements OnInit {
   meetingCollectionRef: AngularFirestoreCollection<any>;
   meetingRef: Observable<any>;
 
-  constructor(private route: ActivatedRoute, private router: Router, private db: AngularFirestore, private dataService: DataService) {
+  constructor(private route: ActivatedRoute, private router: Router, public db: AngularFirestore, private dataService: DataService) {
     this.userCollectionRef = this.db.collection('user');
     this.userRef = this.userCollectionRef.valueChanges();
 
     this.meetingCollectionRef = this.db.collection('meetings');
-    this.meetingRef = this.userCollectionRef.valueChanges();
+    this.meetingRef = this.meetingCollectionRef.valueChanges();
   }
 
   ngOnInit() {
@@ -48,7 +48,7 @@ export class CreateMeetingPage implements OnInit {
     console.log(this.dataService.getData(1));
 
     //Gastgeber setzen
-    this.user = firebase.auth().currentUser;
+    this.user = this.dataService.getData(2);
     this.userCollectionRef.doc(this.user.uid).valueChanges().forEach((user1) => {
       this.username = user1['username'];
     });
@@ -56,8 +56,13 @@ export class CreateMeetingPage implements OnInit {
 
 /**
  * prüfen
- * */
+ **/
   async checkMeeting() {
+
+    if (this.raumAuswahl === 'r1') {
+      this.bewirtungsauswahl = [];
+    }
+
     this.flag = false;
     let dateFrom = new Date(this.dateFrom);
     let dateTo = new Date(this.dateTo);
@@ -76,11 +81,12 @@ export class CreateMeetingPage implements OnInit {
         return;
       } else {
         for (var i = 0; i < document.length; i++){
+          console.log(document);
           console.log('1.6: ' + document[i]['room']);
           console.log('1.6.1: ' + document[i]['dateAndTimeStart']);
           console.log('1.6.2: ' + document[i]['dateAndTimeEnd']);
-          let dateFireFrom = new Date(document[i]['dateAndTimeStart'].toDate());
-          let dateFireTo = new Date(document[i]['dateAndTimeEnd'].toDate());
+          let dateFireFrom = new Date(document[i]['dateAndTimeStart']);
+          let dateFireTo = new Date(document[i]['dateAndTimeEnd']);
           console.log('dateFireFrom: ' + dateFireFrom);
           console.log('dateFireTo: ' + dateFireTo);
           console.log('dateFrom: ' + dateFrom);
@@ -111,22 +117,27 @@ export class CreateMeetingPage implements OnInit {
     await delay(5000);
     console.log('4: ' + this.flag);
     if (this.flag) {
+      var idref = this.user.uid + this.raumAuswahl + this.dateTo;
       console.log('5: ' + this.flag);
-      this.meetingCollectionRef.add({
+      this.meetingCollectionRef.doc(idref).set({
         bewirtung: this.bewirtungsauswahl,
-        dateAndTimeEnd: this.dateFrom,
-        dateAndTimeStart: this.dateTo,
+        dateAndTimeEnd: this.dateTo,
+        dateAndTimeStart: this.dateFrom,
         hostID: this.user.uid,
         hostName: this.username,
         optional: this.optionaleEinladungen,
-        verpflichtend: this.verpflichtendeEinladungen
-      }).then(function(docRef) {
-        console.log("Document written with ID: ", docRef.id);
-    })
-    .catch(function(error) {
-        console.error("Error adding document: ", error);
-    });
+        verpflichtend: this.verpflichtendeEinladungen,
+        room: this.raumAuswahl,
+        id: idref
+      }).then(function() {
+        console.log("Document successfully written!");
+      })
+      .catch(function(error) {
+          console.error("Error writing document: ", error);
+      });
     }
+    console.log('6: ' + idref);
+    //this.meetingCollectionRef.doc(idref).update({id: idref});
   }
 
 }

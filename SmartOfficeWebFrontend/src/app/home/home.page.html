@@ -38,20 +38,16 @@
     <ion-item>
       <ion-label>Aktuelle Meetings:</ion-label>
     </ion-item>
-    <ion-list>
-        <ion-item><div>TEST1</div></ion-item>
-        <ion-item><div>TEST2</div></ion-item>
-        <ion-item><div>TEST3</div></ion-item>
-        <ion-item><div>TEST4</div></ion-item>
-        <ion-item><div>TEST5</div></ion-item>
-        <ion-item *ngFor="let item of items">
-          <ion-icon [name]="item.icon" slot="start"></ion-icon>
-          {{item.title}}
-          <div class="item-note" slot="end">
-            {{item.note}}
-          </div>
+    <ion-list *ngFor="let m of query | async; let i=index">
+        <ion-item id='m.id'>
+          <ion-card>
+            <ion-card-header>
+              <ion-card-subtitle>{{m.room}}</ion-card-subtitle>
+              <ion-card-title>{{m.dateAndTimeStart}} - {{m.dateAndTimeEnd}}</ion-card-title>
+            </ion-card-header>
+            <ion-card-content>Host: {{m.hostName}}</ion-card-content>
+          </ion-card>
         </ion-item>
       </ion-list>
   </div>
-  
 </ion-content>
