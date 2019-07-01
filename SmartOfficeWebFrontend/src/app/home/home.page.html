@@ -26,11 +26,22 @@
         <area target="" alt="Büro2" title="Büro2" (click)="goToCreatPage('r2')" coords="251,197,380,197,380,373,251,373" shape="poly">
         <area target="" alt="Büro3" title="Büro3" (click)="goToCreatPage('r3')" coords="17,20,159,18,159,191,17,191" shape="poly">
     </map>
+    <!--
+      rot: rgba(255,0,0,0.5)
+      grün: rgba(0,255,0,0.5)
+      orange: rgba(255,69,0,0.5)
+    -->
     <div class="overlay" style="width:600px; height: 357px;" >
       <svg width="400" height="395" viewBox="0 0 400 395">
-          <polyline points="17,197,180,197,180,373,17,373" fill="rgba(255,0,0,0.5)" stroke="blue"></polyline>
-          <polyline points="251,197,380,197,380,373,251,373" fill="rgba(255,69,0,0.5)" stroke="blue"></polyline>
-          <polyline points="17,20,159,18,159,191,17,191" fill="rgba(0,255,0,0.5)" stroke="blue"></polyline>        
+          <polyline *ngIf="raum1FlagFrei && !raum1FlagReserviert && !raum1FlagBelegt" points="17,197,180,197,180,373,17,373" fill="rgba(0,255,0,0.5)" stroke="blue"></polyline>
+          <polyline *ngIf="raum2FlagFrei && !raum2FlagReserviert && !raum2FlagBelegt" points="251,197,380,197,380,373,251,373" fill="rgba(0,255,0,0.5)" stroke="blue"></polyline>
+          <polyline *ngIf="raum3FlagFrei && !raum3FlagReserviert && !raum3FlagBelegt" points="17,20,159,18,159,191,17,191" fill="rgba(0,255,0,0.5)" stroke="blue"></polyline>
+          <polyline *ngIf="!raum1FlagFrei && raum1FlagReserviert && !raum1FlagBelegt" points="17,197,180,197,180,373,17,373" fill="rgba(255,69,0,0.5)" stroke="blue"></polyline>
+          <polyline *ngIf="!raum2FlagFrei && raum2FlagReserviert && !raum2FlagBelegt" points="251,197,380,197,380,373,251,373" fill="rgba(255,69,0,0.5)" stroke="blue"></polyline>
+          <polyline *ngIf="!raum3FlagFrei && raum3FlagReserviert && !raum3FlagBelegt" points="17,20,159,18,159,191,17,191" fill="rgba(255,69,0,0.5)" stroke="blue"></polyline>
+          <polyline *ngIf="!raum1FlagFrei && raum1FlagReserviert && raum1FlagBelegt" points="17,197,180,197,180,373,17,373" fill="rgba(255,0,0,0.5)" stroke="blue"></polyline>
+          <polyline *ngIf="!raum2FlagFrei && raum2FlagReserviert && raum2FlagBelegt" points="251,197,380,197,380,373,251,373" fill="rgba(255,0,0,0.5)" stroke="blue"></polyline>
+          <polyline *ngIf="!raum3FlagFrei && raum3FlagReserviert && raum3FlagBelegt" points="17,20,159,18,159,191,17,191" fill="rgba(255,0,0,0.5)" stroke="blue"></polyline>       
       </svg>
     </div>
   </div>
