@@ -59,7 +59,7 @@ export class AppComponent {
     this.authService.logoutUser()
     .then(res => {
       console.log(res);
-      this.navCtrl.navigateBack('');
+      this.navCtrl.navigateBack('/login');
     })
     .catch(error => {
       console.log(error);
