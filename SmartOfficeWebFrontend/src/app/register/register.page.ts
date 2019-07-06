@@ -45,6 +45,12 @@ export class RegisterPage implements OnInit {
     });
   }
 
+  /**
+   * 
+   * @param value 
+   * 
+   * Firebase-Methode: Registriert einen User mit der angegebenen E-Mail und einem Passwort
+   */
   tryRegister(value) {
     this.authService.registerUser(value)
       .then(res => {
@@ -58,6 +64,9 @@ export class RegisterPage implements OnInit {
       });
   }
 
+  /**
+   * Verlinkt auf die "Login"-Seite
+   */
   goLoginPage() {
     this.navCtrl.navigateBack('');
   }

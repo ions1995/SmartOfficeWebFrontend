@@ -50,7 +50,12 @@ export class LoginPage implements OnInit {
     ]
   };
 
-
+  /**
+   * 
+   * @param value 
+   * 
+   * Firebase-Methode: loggt den User ein
+   */
   loginUser(value){
     this.authService.loginUser(value)
     .then(res => {
@@ -63,6 +68,9 @@ export class LoginPage implements OnInit {
     });
   }
 
+  /**
+   * Verlinkt auf die "Registrierungs"-Seite
+   */
   goToRegisterPage(){
     this.navCtrl.navigateForward('/register');
   }

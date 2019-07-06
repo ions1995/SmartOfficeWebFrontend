@@ -21,21 +21,21 @@ export class AppComponent {
       url: '/home',
       icon: 'grid'
     },
-    {
+    /*{
       title: 'Belegungsplan',
       url: '/list',
       icon: 'list'
-    },
+    },*/
     {
       title: 'Meetings erstellen',
       url: '/create-meeting',
       icon: 'add'
     },
-    {
+    /*{
       title: 'Details zu Meetings',
       url: '/meeting-details',
       icon: 'information-circle'
-    }
+    }*/
   ];
 
   constructor(
@@ -55,6 +55,9 @@ export class AppComponent {
     });
   }
 
+  /**
+   * Firebase-Methode: loggt den User aus
+   */
   logout() {
     this.authService.logoutUser()
     .then(res => {

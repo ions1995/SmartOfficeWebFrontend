@@ -75,26 +75,35 @@ export class HomePage {
           if (room[t]['name'] === 'Büro 1') {
             this.raum1FlagFrei = room[t]['frei'];
             this.raum1FlagReserviert = room[t]['reserviert'];
-            this.raum1FlagBelegt = room[t]['beleggt'];
+            this.raum1FlagBelegt = room[t]['belegt'];
           } else if (room[t]['name'] === 'Büro 2') {
             this.raum2FlagFrei = room[t]['frei'];
             this.raum2FlagReserviert = room[t]['reserviert'];
-            this.raum2FlagBelegt = room[t]['beleggt'];
+            this.raum2FlagBelegt = room[t]['belegt'];
           } else if (room[t]['name'] === 'Büro 3') {
             this.raum3FlagFrei = room[t]['frei'];
             this.raum3FlagReserviert = room[t]['reserviert'];
-            this.raum3FlagBelegt = room[t]['beleggt'];
+            this.raum3FlagBelegt = room[t]['belegt'];
           }
         }
       });
   }
-
+  /**
+   * 
+   * @param raum 
+   * 
+   * Verlinkt zur "Meeting erstellen"-Seite und übergibt den ausgewählten Raum
+   * (aus der Übersichts-Map)
+   */
   goToCreatPage(raum) {
     this.dataService.setData(1, raum);
     this.router.navigateByUrl('/create-meeting/1');
   }
 
-  //Läd den momentanen Stand neu --> Liste oder Map aktualisieren sich 
+  /**
+   * Läd den momentanen Stand neu --> Liste oder Map aktualisieren sich 
+   * & löscht alte Meetings
+   */
   async reload() {
     var actualDate = new Date();
     var deleteArray2 = [];
@@ -120,7 +129,7 @@ export class HomePage {
       });
     }
 
-    //löschen alter Meetings
+    await delay(3000);
     this.query = this.db.collection('/meetings/', ref => ref.limit(3)).valueChanges();
     console.log(this.query);
     this.query.forEach((element) => {
@@ -130,56 +139,78 @@ export class HomePage {
       this.raum3FlagReserviert = false;
       for (var r = 0; r<element.length; r++) {
         if (element[r]['room'] === 'r1') {
+          console.log('1: r1res = true');
           this.raum1FlagReserviert = true;
+          console.log('1.5: ' + this.raum1FlagReserviert);
         } else if (element[r]['room'] === 'r2') {
+          console.log('2: r2res = true');
           this.raum3FlagReserviert = true;
+          console.log('2.5: ' + this.raum2FlagReserviert);
         } else if (element[r]['room'] === 'r3') {
-          this.raum2FlagReserviert = true;
+          console.log('3: r3res = true');
+          this.raum3FlagReserviert = true;
+          console.log('3.5: ' + this.raum3FlagReserviert);
         }
       }
-      this.setRoomreserviert();
     });
+    await delay(3000);
+    this.setRoomreserviert();
   }
 
+  /**
+   * setzt Räme auf den Status "reserviert" = true wenn ein Meeting zu diesem Zeitpunkt eingetragen ist
+   */
   setRoomreserviert() {
     if (this.raum1FlagReserviert === false) {
+      console.log('4.0: res:' + this.raum1FlagReserviert + 'fre: ' + this.raum1FlagFrei);
       this.raum1FlagFrei = true;
+      console.log('4: r1res = false --> r1fre = true');
 
     }
     if (this.raum2FlagReserviert === false) {
-      this.raum1FlagFrei = true;
-
+      console.log('5.0: res:' + this.raum2FlagReserviert + 'fre: ' + this.raum2FlagFrei);
+      this.raum2FlagFrei = true;
+      console.log('5: r2res = false --> r2fre = true');
     }
     if (this.raum3FlagReserviert === false) {
-      this.raum1FlagFrei = true;
-
+      console.log('6.0: res:' + this.raum3FlagReserviert + 'fre: ' + this.raum3FlagFrei);
+      this.raum3FlagFrei = true;
+      console.log('6: r3res = false --> r3fre = true');
     }
 
     if (this.raum1FlagReserviert === true) {
+      console.log('7.0: res:' + this.raum1FlagReserviert + 'fre: ' + this.raum1FlagFrei);
       this.raum1FlagFrei = false;
-
+      console.log('7: r1res = true --> r1fre = false');
     }
     if (this.raum2FlagReserviert === true) {
-      this.raum1FlagFrei = false;
+      console.log('8.0: res:' + this.raum2FlagReserviert + 'fre: ' + this.raum2FlagFrei);
+      this.raum2FlagFrei = false;
+      console.log('8: r2res = true --> r2fre = false');
 
     }
     if (this.raum3FlagReserviert === true) {
-      this.raum1FlagFrei = false;
+      console.log('9.0: res:' + this.raum3FlagReserviert + 'fre: ' + this.raum3FlagFrei);
+      this.raum3FlagFrei = false; 
+      console.log('9: r3res = true --> r3fre = false');
 
     }
 
+    console.log('10.1: res:' + this.raum1FlagReserviert + 'fre: ' + this.raum1FlagFrei);
     this.db.collection('rooms').doc('r1').update({
        reserviert: this.raum1FlagReserviert,
        frei: this.raum1FlagFrei
       });
-
+    console.log('10.2: res:' + this.raum2FlagReserviert + 'fre: ' + this.raum2FlagFrei);
     this.db.collection('rooms').doc('r2').update({
       reserviert: this.raum2FlagReserviert,
       frei: this.raum2FlagFrei
     });
+    console.log('10.3: res:' + this.raum3FlagReserviert + 'fre: ' + this.raum3FlagFrei);
     this.db.collection('rooms').doc('r3').update({
       reserviert: this.raum3FlagReserviert,
       frei: this.raum3FlagFrei
     });
+    console.log('10: Update Räume fertig!')
   }
 }

@@ -37,6 +37,9 @@ export class UserdetailsPage implements OnInit {
     });
   }
 
+  /**
+   * Legt die Angaben zum User in Firestore ab
+   */
   updateUser() {
     var user = this.dataService.getData(2);
     console.log(this.department);

@@ -24,31 +24,21 @@
   <ion-item>
     <ion-label>Verpflichtend:</ion-label>
     <ion-select [(ngModel)]="verpflichtendeEinladungen" multiple="true" interface="alert" cancelText="Abbrechen" okText="OK">
-      <ion-select-option value="bacon">Bacon</ion-select-option>
-      <ion-select-option value="olives">Black Olives</ion-select-option>
-      <ion-select-option value="xcheese">Extra Cheese</ion-select-option>
-      <ion-select-option value="peppers">Green Peppers</ion-select-option>
-      <ion-select-option value="mushrooms">Mushrooms</ion-select-option>
-      <ion-select-option value="onions">Onions</ion-select-option>
-      <ion-select-option value="pepperoni">Pepperoni</ion-select-option>
-      <ion-select-option value="pineapple">Pineapple</ion-select-option>
-      <ion-select-option value="sausage">Sausage</ion-select-option>
-      <ion-select-option value="Spinach">Spinach</ion-select-option>
+      <ion-select-option value="u1">User 1</ion-select-option>
+      <ion-select-option value="u2">User 2</ion-select-option>
+      <ion-select-option value="u3">User 3</ion-select-option>
+      <ion-select-option value="u4">User 4</ion-select-option>
+      <ion-select-option value="u5">User 5</ion-select-option>
     </ion-select>
   </ion-item>
   <ion-item>
     <ion-label>Optional:</ion-label>
     <ion-select [(ngModel)]="optionaleEinladungen" multiple="true" interface="alert" cancelText="Abbrechen" okText="OK">
-      <ion-select-option value="bacon">Bacon</ion-select-option>
-      <ion-select-option value="olives">Black Olives</ion-select-option>
-      <ion-select-option value="xcheese">Extra Cheese</ion-select-option>
-      <ion-select-option value="peppers">Green Peppers</ion-select-option>
-      <ion-select-option value="mushrooms">Mushrooms</ion-select-option>
-      <ion-select-option value="onions">Onions</ion-select-option>
-      <ion-select-option value="pepperoni">Pepperoni</ion-select-option>
-      <ion-select-option value="pineapple">Pineapple</ion-select-option>
-      <ion-select-option value="sausage">Sausage</ion-select-option>
-      <ion-select-option value="Spinach">Spinach</ion-select-option>
+      <ion-select-option value="u1">User 1</ion-select-option>
+      <ion-select-option value="u2">User 2</ion-select-option>
+      <ion-select-option value="u3">User 3</ion-select-option>
+      <ion-select-option value="u4">User 4</ion-select-option>
+      <ion-select-option value="u5">User 5</ion-select-option>
     </ion-select>
   </ion-item>
   <ion-item>
@@ -77,6 +67,12 @@
       <ion-select-option value="getraenke">Getränke</ion-select-option>
       <ion-select-option value="essen">Essen</ion-select-option>
     </ion-select>
+  </ion-item>
+  <ion-item > <!-- *ngIf="fehlermeldungString != ''" -->
+      <ion-icon name="warning"></ion-icon>
+    <div>
+      {{fehlermeldungString}}
+    </div>
   </ion-item>
   <ion-item>
     <ion-button (click)="checkMeeting()">Prüfen der Buchung</ion-button>

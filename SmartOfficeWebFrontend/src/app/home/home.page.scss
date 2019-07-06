@@ -1,12 +1,3 @@
- #image-container {
-  position: relative;
-  margin: 3em auto;
-  margin-top: 3em;
-  margin-right: auto;
-  margin-bottom: 3em;
-  margin-left: auto;
-}
-
 .overlay {
   position: absolute;
   top: 0;
@@ -14,4 +5,53 @@
   overflow: visible;
   pointer-events:none;
   background:none !important;
+}
+
+@media screen and (min-width: 200px) and (max-width: 399px) {
+  #image-container_large{ 
+    display: none;
+   }
+  #image-container_medium{ 
+    display: none;
+   }
+  #image-container_small{ 
+    position: relative;
+    margin: 3em auto;
+    margin-top: 3em;
+    margin-right: auto;
+    margin-bottom: 3em;
+    margin-left: auto;
+   }
+}
+@media screen and (min-width: 400px) and (max-width: 599px) {
+  #image-container_large{ 
+    display: none;
+   }
+  #image-container_medium{ 
+    position: relative;
+    margin: 3em auto;
+    margin-top: 3em;
+    margin-right: auto;
+    margin-bottom: 3em;
+    margin-left: auto;
+   }
+  #image-container_small{ 
+    display: none;
+   }
+}
+@media screen and (min-width: 600px) and (max-width: 1024px) {
+  #image-container_large{
+    position: relative;
+    margin: 3em auto;
+    margin-top: 3em;
+    margin-right: auto;
+    margin-bottom: 3em;
+    margin-left: auto;
+   }
+  #image-container_medium{ 
+    display: none;
+   }
+  #image-container_small{ 
+    display: none;
+   }
 }

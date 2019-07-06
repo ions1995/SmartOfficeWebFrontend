@@ -6,6 +6,8 @@ import { Observable } from 'rxjs';
 
 import { DataService } from '../services/data.service';
 import { delay } from 'q';
+import { AlertController } from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-create-meeting',
@@ -30,7 +32,16 @@ export class CreateMeetingPage implements OnInit {
   meetingCollectionRef: AngularFirestoreCollection<any>;
   meetingRef: Observable<any>;
 
-  constructor(private route: ActivatedRoute, private router: Router, public db: AngularFirestore, private dataService: DataService) {
+  fehlermeldungString: string;
+
+  constructor(
+    private navCtrl: NavController,
+    private route: ActivatedRoute,
+    private router: Router,
+    public db: AngularFirestore,
+    private dataService: DataService,
+    public alertController: AlertController
+  ) {
     this.userCollectionRef = this.db.collection('user');
     this.userRef = this.userCollectionRef.valueChanges();
 
@@ -45,7 +56,6 @@ export class CreateMeetingPage implements OnInit {
 
     //Raum nach der Auswahl auf der Übersicht setzen
     this.raumAuswahl = this.dataService.getData(1);
-    console.log(this.dataService.getData(1));
 
     //Gastgeber setzen
     this.user = this.dataService.getData(2);
@@ -54,9 +64,9 @@ export class CreateMeetingPage implements OnInit {
     });
   }
 
-/**
- * prüfen
- **/
+  /**
+   * prüfen der Eingaben
+   **/
   async checkMeeting() {
 
     if (this.raumAuswahl === 'r1') {
@@ -67,58 +77,50 @@ export class CreateMeetingPage implements OnInit {
     let dateFrom = new Date(this.dateFrom);
     let dateTo = new Date(this.dateTo);
 
-    console.log('1: ' + this.flag);
-
     var query = this.db.collection('/meetings/', ref => ref
-    .where('room', '==', this.raumAuswahl)).valueChanges();
-    console.log(query);
+      .where('room', '==', this.raumAuswahl)).valueChanges();
 
+    var breakLoop = false;
     query.forEach(document => {
-      console.log('1,2: ' + document);
-      if (document.length === 0) {
-        this.flag = true;
-        console.log('1,5: ' + this.flag);
-        return;
-      } else {
-        for (var i = 0; i < document.length; i++){
-          console.log(document);
-          console.log('1.6: ' + document[i]['room']);
-          console.log('1.6.1: ' + document[i]['dateAndTimeStart']);
-          console.log('1.6.2: ' + document[i]['dateAndTimeEnd']);
-          let dateFireFrom = new Date(document[i]['dateAndTimeStart']);
-          let dateFireTo = new Date(document[i]['dateAndTimeEnd']);
-          console.log('dateFireFrom: ' + dateFireFrom);
-          console.log('dateFireTo: ' + dateFireTo);
-          console.log('dateFrom: ' + dateFrom);
-          console.log('dateTo: ' + dateTo);
-          console.log('dateFrom < dateFireFrom');
-          console.log(dateFrom < dateFireFrom);
-          console.log('dateTo <= dateFireFrom');
-          console.log(dateTo <= dateFireFrom);
-          console.log('dateFrom >= dateFireTo');
-          console.log(dateFrom >= dateFireTo);
-          console.log('dateTo > dateFireTo');
-          console.log(dateTo > dateFireTo);
-          if ((dateFrom < dateFireFrom && dateTo <= dateFireFrom) || (dateFrom >= dateFireTo && dateTo > dateFireTo)) {
-            this.flag = true;
-            console.log('1,7: ' + this.flag);
+      if (!breakLoop) {
+        if (dateFrom < new Date() || dateTo < new Date()) {
+          breakLoop = true;
+          this.fehlermeldungString = 'Sie haben ein Anfangsdatum oder ein Enddatum gewählt, das kleiner als das aktuelle Datum ist. Es ist nicht möglich Meetings in der Vergangenheit zu erstellen. Bitte beheben Sie diesen Fehler und versuchen Sie es erneut.';
+        } else {
+          if (dateTo < dateFrom && !breakLoop) {
+            this.fehlermeldungString = 'Sie haben ein Anfangsdatum gewählt, daas größer als das Enddatum ist. Bitte beheben Sie diesen Fehler und versuchen Sie es erneut.';
+            breakLoop = true;
           } else {
-            console.log('1.8: ' + this.flag);
+            if (document.length === 0 && !breakLoop) {
+              this.flag = true;
+              this.fehlermeldungString = 'Buchung kann vorgenommen werden.';
+            } else {
+              for (var i = 0; i < document.length; i++) {
+                let dateFireFrom = new Date(document[i]['dateAndTimeStart']);
+                let dateFireTo = new Date(document[i]['dateAndTimeEnd']);
+                if (((dateFrom < dateFireFrom && dateTo <= dateFireFrom) || (dateFrom >= dateFireTo && dateTo > dateFireTo)) && !breakLoop) {
+                  this.flag = true;
+                  this.fehlermeldungString = 'Buchung kann vorgenommen werden.';
+                } else {
+                  this.fehlermeldungString = 'Fehler bei der Prüfung', 'Es kam zu einem unerwarteten Fehler bei der Prüfung. Bitte überprüfen Sie ihre EIngaben und versuchen Sie es erneut.';
+                  breakLoop = true;
+                }
+              }
+            }
           }
         }
       }
     });
-    console.log('2: ' + this.flag);
   }
 
+  /**
+   * Eingeben prüfen und das Meeting anlegen falls es zu keinen anderen Fehlern kommt
+   */
   async saveMeeting() {
-    console.log('3: ' + this.flag);
     this.checkMeeting();
     await delay(5000);
-    console.log('4: ' + this.flag);
     if (this.flag) {
       var idref = this.user.uid + this.raumAuswahl + this.dateTo;
-      console.log('5: ' + this.flag);
       this.meetingCollectionRef.doc(idref).set({
         bewirtung: this.bewirtungsauswahl,
         dateAndTimeEnd: this.dateTo,
@@ -129,15 +131,33 @@ export class CreateMeetingPage implements OnInit {
         verpflichtend: this.verpflichtendeEinladungen,
         room: this.raumAuswahl,
         id: idref
-      }).then(function() {
+      }).then(function () {
         console.log("Document successfully written!");
-      })
-      .catch(function(error) {
-          console.error("Error writing document: ", error);
+      }).catch(function (error) {
+        console.error("Error writing document: ", error);
       });
+      this.navigateToHome();
     }
-    console.log('6: ' + idref);
-    //this.meetingCollectionRef.doc(idref).update({id: idref});
+  }
+
+  /**
+   * Fehlerausgabe-Methode
+   */
+  async presentAlert(title: string, text: string) {
+    const alert = await this.alertController.create({
+      header: title,
+      message: text,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
+  /**
+   * Methode um zurück zur Raumübersicht zu gelangen
+   */
+  navigateToHome() {
+    this.navCtrl.navigateBack('/home');
   }
 
 }
