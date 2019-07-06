@@ -1,6 +1,8 @@
 {
   "name": "SmartOfficeWebFrontend",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular",
   "id": "a6f1df10"
 }

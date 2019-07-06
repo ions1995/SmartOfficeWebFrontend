@@ -11,9 +11,9 @@
 
 <ion-content>
   <ion-item>
-      <ion-label item-end>List</ion-label>
-      <ion-toggle [(ngModel)]="toggleMapOrList" checked="true"></ion-toggle>
-      <ion-label item-start>Map</ion-label>
+      <ion-label item-end>Liste</ion-label>
+      <ion-toggle [(ngModel)]="toggleMapOrList" checked="true" (ionChange)="update()"></ion-toggle>
+      <ion-label item-start>Übersichts-Map</ion-label>
   </ion-item>
   <ion-item>
     <ion-button (click)="reload()" item-end>Aktualisieren</ion-button>

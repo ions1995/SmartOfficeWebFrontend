@@ -32,7 +32,7 @@ export class CreateMeetingPage implements OnInit {
   meetingCollectionRef: AngularFirestoreCollection<any>;
   meetingRef: Observable<any>;
 
-  fehlermeldungString: string;
+  fehlermeldungString: string = '';
 
   constructor(
     private navCtrl: NavController,

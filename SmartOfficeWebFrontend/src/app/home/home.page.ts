@@ -88,6 +88,15 @@ export class HomePage {
         }
       });
   }
+
+  /**
+   * Läd die Liste der Meetings nach.
+   */
+  update(){
+    this.query = this.db.collection('/meetings/', ref => ref.limit(3)).valueChanges();
+    this.reload();
+  }
+
   /**
    * 
    * @param raum 
@@ -119,7 +128,7 @@ export class HomePage {
       }
     });
 
-    await delay(5000);
+    await delay(500);
     console.log(deleteArray2);
     for (var o = 0; o < deleteArray2.length; o++) {
       this.meetingCollectionRef.doc(deleteArray2[o]).delete().then(function() {
@@ -128,8 +137,6 @@ export class HomePage {
         console.error('Error removing document: ', error);
       });
     }
-
-    await delay(3000);
     this.query = this.db.collection('/meetings/', ref => ref.limit(3)).valueChanges();
     console.log(this.query);
     this.query.forEach((element) => {
@@ -153,7 +160,6 @@ export class HomePage {
         }
       }
     });
-    await delay(3000);
     this.setRoomreserviert();
   }
 

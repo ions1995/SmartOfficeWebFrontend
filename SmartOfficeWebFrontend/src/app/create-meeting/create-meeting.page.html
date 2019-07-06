@@ -68,10 +68,10 @@
       <ion-select-option value="essen">Essen</ion-select-option>
     </ion-select>
   </ion-item>
-  <ion-item > <!-- *ngIf="fehlermeldungString != ''" -->
+  <ion-item *ngIf="fehlermeldungString != ''">
       <ion-icon name="warning"></ion-icon>
     <div>
-      {{fehlermeldungString}}
+         {{fehlermeldungString}}
     </div>
   </ion-item>
   <ion-item>
