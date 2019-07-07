@@ -43,57 +43,66 @@ export class HomePage {
   raum2FlagBelegt;
   raum3FlagBelegt;
 
+  roomIsInUseFlag;
+
   roomCollectionRef: AngularFirestoreCollection<any>;
   roomRef: Observable<any>;
 
   constructor(
     private router: Router, private dataService: DataService, public db: AngularFirestore) {
-      this.meetingCollectionRef = this.db.collection('meetings');
-      this.meetingRef = this.meetingCollectionRef.valueChanges();
-      this.roomCollectionRef = this.db.collection('rooms');
-      this.roomRef = this.meetingCollectionRef.valueChanges();
+    this.meetingCollectionRef = this.db.collection('meetings');
+    this.meetingRef = this.meetingCollectionRef.valueChanges();
+    this.roomCollectionRef = this.db.collection('rooms');
+    this.roomRef = this.meetingCollectionRef.valueChanges();
 
-      this.userID = this.dataService.getData(2);
+    this.userID = this.dataService.getData(2);
 
-      this.reload();
+    this.reload();
 
-      this.query = this.db.collection('/meetings/', ref => ref.limit(3)).valueChanges();
-      console.log(this.query);
+    this.query = this.db.collection('/meetings/', ref => ref.limit(3)).valueChanges();
+    console.log(this.query);
 
-      this.raum1FlagFrei = true;
-      this.raum2FlagFrei = true;
-      this.raum3FlagFrei = true;
-      this.raum1FlagReserviert = false;
-      this.raum2FlagReserviert = false;
-      this.raum3FlagReserviert = false;
-      this.raum1FlagBelegt = false;
-      this.raum2FlagBelegt = false;
-      this.raum3FlagBelegt = false;
+    this.raum1FlagFrei = true;
+    this.raum2FlagFrei = true;
+    this.raum3FlagFrei = true;
+    this.raum1FlagReserviert = false;
+    this.raum2FlagReserviert = false;
+    this.raum3FlagReserviert = false;
+    this.raum1FlagBelegt = false;
+    this.raum2FlagBelegt = false;
+    this.raum3FlagBelegt = false;
 
-      this.db.collection('rooms').valueChanges().forEach((room) => {
-        for (var t = 0; t < room.length; t++){
-          if (room[t]['name'] === 'Büro 1') {
-            this.raum1FlagFrei = room[t]['frei'];
-            this.raum1FlagReserviert = room[t]['reserviert'];
-            this.raum1FlagBelegt = room[t]['belegt'];
-          } else if (room[t]['name'] === 'Büro 2') {
-            this.raum2FlagFrei = room[t]['frei'];
-            this.raum2FlagReserviert = room[t]['reserviert'];
-            this.raum2FlagBelegt = room[t]['belegt'];
-          } else if (room[t]['name'] === 'Büro 3') {
-            this.raum3FlagFrei = room[t]['frei'];
-            this.raum3FlagReserviert = room[t]['reserviert'];
-            this.raum3FlagBelegt = room[t]['belegt'];
-          }
+    this.db.collection('rooms').valueChanges().forEach((room) => {
+      for (var t = 0; t < room.length; t++) {
+        if (room[t]['name'] === 'Büro 1') {
+          this.raum1FlagFrei = room[t]['frei'];
+          this.raum1FlagReserviert = room[t]['reserviert'];
+          this.raum1FlagBelegt = room[t]['belegt'];
+        } else if (room[t]['name'] === 'Büro 2') {
+          this.raum2FlagFrei = room[t]['frei'];
+          this.raum2FlagReserviert = room[t]['reserviert'];
+          this.raum2FlagBelegt = room[t]['belegt'];
+        } else if (room[t]['name'] === 'Büro 3') {
+          this.raum3FlagFrei = room[t]['frei'];
+          this.raum3FlagReserviert = room[t]['reserviert'];
+          this.raum3FlagBelegt = room[t]['belegt'];
         }
-      });
+      }
+    });
   }
 
   /**
    * Läd die Liste der Meetings nach.
    */
-  update(){
+  update() {
     this.query = this.db.collection('/meetings/', ref => ref.limit(3)).valueChanges();
+    this.reload();
+  }
+
+  /**
+   * Läd die Liste der Meetings nach.
+   */
+  ionViewDidEnter(){
     this.reload();
   }
 
@@ -116,26 +125,38 @@ export class HomePage {
   async reload() {
     var actualDate = new Date();
     var deleteArray2 = [];
+    var inUserArray = [];
     console.log(actualDate);
     var sortedMeetimgRef = this.db.collection('/meetings/', ref => ref.orderBy('dateAndTimeEnd', 'asc')).valueChanges();
-    sortedMeetimgRef.forEach(function(document) {
+    sortedMeetimgRef.forEach(function (document) {
       for (var i = 0; i < document.length; i++) {
         var meetingEndTime = new Date(document[i]['dateAndTimeEnd']);
-        if (meetingEndTime < actualDate) {
+        var meetingStartTime = new Date(document[i]['dateAndTimeStart']);
+        var meetingStartTimeAddedWith10Min = new Date(document[i]['dateAndTimeStart']);
+        meetingStartTimeAddedWith10Min.setMinutes(meetingStartTime.getMinutes() + 3);
+        console.log('Hier!! : ' + meetingStartTime + ' / ' + meetingStartTimeAddedWith10Min);
+        if (meetingEndTime < actualDate || meetingStartTimeAddedWith10Min < actualDate) {
           deleteArray2.push(document[i]['id']);
+          inUserArray.push(document[i]['room']);
           console.log(deleteArray2);
         }
       }
     });
 
-    await delay(500);
+    await delay(300);
     console.log(deleteArray2);
     for (var o = 0; o < deleteArray2.length; o++) {
-      this.meetingCollectionRef.doc(deleteArray2[o]).delete().then(function() {
-        console.log('Document successfully deleted!');
-      }).catch(function(error) {
-        console.error('Error removing document: ', error);
-      });
+      this.isRoomInUse(inUserArray[o]);
+      await delay(200);
+      console.log('löschen');
+      console.log(this.roomIsInUseFlag);
+      if (this.roomIsInUseFlag) {
+        this.meetingCollectionRef.doc(deleteArray2[o]).delete().then(function () {
+          console.log('Document successfully deleted!');
+        }).catch(function (error) {
+          console.error('Error removing document: ', error);
+        });
+      }
     }
     this.query = this.db.collection('/meetings/', ref => ref.limit(3)).valueChanges();
     console.log(this.query);
@@ -144,14 +165,14 @@ export class HomePage {
       this.raum1FlagReserviert = false;
       this.raum2FlagReserviert = false;
       this.raum3FlagReserviert = false;
-      for (var r = 0; r<element.length; r++) {
+      for (var r = 0; r < element.length; r++) {
         if (element[r]['room'] === 'r1') {
           console.log('1: r1res = true');
           this.raum1FlagReserviert = true;
           console.log('1.5: ' + this.raum1FlagReserviert);
         } else if (element[r]['room'] === 'r2') {
           console.log('2: r2res = true');
-          this.raum3FlagReserviert = true;
+          this.raum2FlagReserviert = true;
           console.log('2.5: ' + this.raum2FlagReserviert);
         } else if (element[r]['room'] === 'r3') {
           console.log('3: r3res = true');
@@ -161,6 +182,43 @@ export class HomePage {
       }
     });
     this.setRoomreserviert();
+  }
+
+  /**
+   * 
+   * @param room 
+   * 
+   * Prüft ob der Raum belegt ist, falls ja wird in Zeile 153 eine Flag gesetzt die verhindert, dass
+   * der Raum gelöscht wird.
+   */
+  async isRoomInUse(room: string) {
+    var breakLoop = false;
+    this.db.collection('rooms').doc(room).valueChanges().forEach((document) => {
+      if (!breakLoop) {
+        console.log(room);
+        console.log('frei: ' + document['frei']);
+        console.log('reserviert: ' + document['reserviert']);
+        console.log('belegt: ' + document['belegt']);
+        console.log(document['frei'] == true);
+        console.log(document['reserviert'] == true);
+        console.log(document['belegt'] == true);
+        console.log(document['frei'] == false);
+        console.log(document['reserviert'] == false);
+        console.log(document['belegt'] == false);
+        if (document['frei'] == true && document['reserviert'] == false && document['belegt'] == false) {
+          this.roomIsInUseFlag = false;
+          breakLoop = true;
+        } else if (document['frei'] == false && document['reserviert'] == true && document['belegt'] == false) {
+          this.roomIsInUseFlag = true;
+          breakLoop = true;
+        } else if (document['frei'] == false && document['reserviert'] == true && document['belegt'] == true) {
+          this.roomIsInUseFlag = false;
+          breakLoop = true;
+        }
+        console.log(this.roomIsInUseFlag);
+      }
+
+    });
   }
 
   /**
@@ -197,16 +255,16 @@ export class HomePage {
     }
     if (this.raum3FlagReserviert === true) {
       console.log('9.0: res:' + this.raum3FlagReserviert + 'fre: ' + this.raum3FlagFrei);
-      this.raum3FlagFrei = false; 
+      this.raum3FlagFrei = false;
       console.log('9: r3res = true --> r3fre = false');
 
     }
 
     console.log('10.1: res:' + this.raum1FlagReserviert + 'fre: ' + this.raum1FlagFrei);
     this.db.collection('rooms').doc('r1').update({
-       reserviert: this.raum1FlagReserviert,
-       frei: this.raum1FlagFrei
-      });
+      reserviert: this.raum1FlagReserviert,
+      frei: this.raum1FlagFrei
+    });
     console.log('10.2: res:' + this.raum2FlagReserviert + 'fre: ' + this.raum2FlagFrei);
     this.db.collection('rooms').doc('r2').update({
       reserviert: this.raum2FlagReserviert,
